@@ -14,6 +14,7 @@ Draw sand particles with your mouse and watch them fall, pile, and slide.
 - **Drag your mouse** to drop sand particles.
 - Watch them fall and interact with gravity.
 - The color hue shifts automatically as you draw.
+- Reload the page to reset.
 
 ## 📂 Project Structure
 index.html → The webpage.
