@@ -30,12 +30,21 @@ function withinRows(j) {
 }
 
 function setup() {
-  createCanvas(600, 800);
-  colorMode(HSB, 260, 255, 255, 255);
+  createCanvas(windowWidth - 4, windowHeight - 4);
+  pixelDensity(1);
+  colorMode(HSB, 360, 255, 255, 255);
+  calculateGrid();
+}
+
+function calculateGrid() {
   cols = floor(width / w);
   rows = floor(height / w);
   grid = make2DArray(cols, rows);
+}
 
+function windowResized() {
+  resizeCanvas(windowWidth - 4, windowHeight - 4);
+  calculateGrid();
 }
 
 function mouseDragged() {
@@ -63,6 +72,32 @@ function mouseDragged() {
   }
 }
 
+// For mobile users
+function touchMoved() {
+  let mouseCol =  floor(mouseX / w);
+  let mouseRow = floor(mouseY / w);
+
+  // Randomly add an area of sand particles
+  let matrix = 5;
+  let extent = floor(matrix / 2);
+  for (let i = -extent; i <= extent; i++) {
+    for (let j = -extent; j <= extent; j++) {
+      if (random(1) < 0.75) {
+        let col = mouseCol + i;
+        let row = mouseRow + j;
+        if (withinCols(col) && withinRows(row)) {
+          grid[col][row] = hueValue;
+        }
+      }
+    }
+  }
+  hueValue += 0.5;
+  if (hueValue > 360) {
+    hueValue = 1;
+  }
+
+  return false;  // Prevent default scroll/zoom behavior
+}
 
 function draw() {
   background(0);
@@ -103,10 +138,11 @@ function draw() {
         // Check below left or right
         let belowA = -1;
         let belowB = -1;
-        if (withinCols(i + dir)) {
+        if (withinCols(i + dir) && withinRows(j + 1)) {
           belowA = grid[i + dir][j + 1];
         }
-        if (withinRows(i - dir)) {
+        
+        if (withinCols(i - dir) && withinRows(j + 1)) {
           belowB = grid[i - dir][j + 1];
         }
 
